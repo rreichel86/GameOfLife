@@ -6,6 +6,7 @@ let board =  [];
 let data = [];
 let running;
 let generations;
+let toroidalWorld;
 
 
 // color cells 
@@ -60,16 +61,17 @@ function init() {
 	}
 	
 	data[ycenter-1][xcenter] = true;
-	//data[ycenter-1][xcenter+1] = true;
-	data[ycenter][xcenter-1] = true;
-	data[ycenter][xcenter] = true;
 	data[ycenter][xcenter+1] = true;
+	data[ycenter+1][xcenter-1] = true;
+	data[ycenter+1][xcenter] = true;
+	data[ycenter+1][xcenter+1] = true;
+	
 	setBoard(true);
 	
 	setInterval( function () {
 		update();
 		setBoard();
-	}, 500)
+	}, 300)
     
 	
 }
@@ -77,6 +79,10 @@ function init() {
 function check() {
 	running = document.getElementById("running").checked;
 	generations.value = 0;
+}
+
+function toggle() {
+	toroidalWorld = document.getElementById("toroidalWorld").checked;
 }
 
 function update() {
@@ -93,8 +99,12 @@ function update() {
 				for (k = i-1; k <= i+1; k++) {
 					for (l = j-1; l <= j+1; l++) {
 						if (k != i || l != j) {
-							if (board[k] && board[k][l] && 
+							if (!toroidalWorld && board[k] && board[k][l] && 
 							    board[k][l].style.background.indexOf("black") != -1) {
+								
+								neighbors++;
+							}
+							else if (toroidalWorld && board[(m+k)%m][(n+l)%n].style.background.indexOf("black") != -1) {
 								
 								neighbors++;
 							}
